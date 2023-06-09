@@ -31,7 +31,6 @@ async function run() {
       .collection("instructors");
 
     //users collection
-
     app.get("/users", async (req, res) => {
       const cursor = usersCollection.find();
       const result = await cursor.toArray();
@@ -44,6 +43,7 @@ async function run() {
       res.send(result);
     });
 
+    // Classes collection
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
