@@ -52,7 +52,6 @@ async function run() {
     });
 
     //users Admin
-
     app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       console.log(req.params.id);
@@ -88,6 +87,41 @@ async function run() {
     app.get("/classes", async (req, res) => {
       const cursor = classesCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/classes/instructor/:email", async (req, res) => {
+      const { Instructor_Email } = req.params;
+      const result = await classesCollection
+        .find({ instructor: Instructor_Email })
+        .toArray();
+      res.send(result);
+    });
+
+    // Status Accepted
+    app.patch("/classes/accepted/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(req.params.id);
+      const filter = { _id: new ObjectId(id) };
+      const updatedAccepted = {
+        $set: {
+          status: `Accepted`,
+        },
+      };
+      const result = await classesCollection.updateOne(filter, updatedAccepted);
+      res.send(result);
+    });
+    // Status denied
+    app.patch("/classes/denied/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(req.params.id);
+      const filter = { _id: new ObjectId(id) };
+      const updatedAccepted = {
+        $set: {
+          status: `Denied`,
+        },
+      };
+      const result = await classesCollection.updateOne(filter, updatedAccepted);
       res.send(result);
     });
 
