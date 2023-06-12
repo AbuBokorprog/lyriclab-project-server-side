@@ -65,8 +65,8 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updatedAdmin);
       res.send(result);
     });
-    //users instructor
 
+    //users instructor
     app.patch("/users/instructor/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -80,6 +80,12 @@ async function run() {
     });
 
     // Classes collection
+    app.post("/classes", async (req, res) => {
+      const classes = req.body;
+      const result = await classesCollection.insertOne(classes);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
