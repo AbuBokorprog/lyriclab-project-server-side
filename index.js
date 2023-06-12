@@ -101,7 +101,6 @@ async function run() {
     // Status Accepted
     app.patch("/classes/accepted/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(req.params.id);
       const filter = { _id: new ObjectId(id) };
       const updatedAccepted = {
         $set: {
@@ -114,7 +113,7 @@ async function run() {
     // Status denied
     app.patch("/classes/denied/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(req.params.id);
+      //console.log(req.params.id);
       const filter = { _id: new ObjectId(id) };
       const updatedAccepted = {
         $set: {
