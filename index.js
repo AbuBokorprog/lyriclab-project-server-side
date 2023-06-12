@@ -76,6 +76,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/:email", async (req, res) => {
+      const { email } = req.params;
+      const result = await usersCollection.findOne({ email: email });
+      res.send(result);
+    });
+
     // Classes collection
     app.post("/classes", async (req, res) => {
       const classes = req.body;
@@ -88,16 +94,9 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/users/:email", async (req, res) => {
+    app.get("/classes/:email", async (req, res) => {
       const { email } = req.params;
-      const result = await usersCollection.findOne({ email: email });
-      res.send(result);
-    });
-
-    app.get("/classes:email", async (req, res) => {
-      const email = req.params.email;
-      console.log(email);
-      const query = { email: email };
+      const query = { Instructor_Email: email };
       const result = await classesCollection.find(query).toArray();
       res.send(result);
     });
