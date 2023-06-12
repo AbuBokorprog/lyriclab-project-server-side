@@ -88,6 +88,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/:email", async (req, res) => {
+      const { email } = req.params;
+      const result = await usersCollection.findOne({ email: email });
+      res.send(result);
+    });
+
     app.get("/classes:email", async (req, res) => {
       const email = req.params.email;
       console.log(email);
@@ -130,7 +136,6 @@ async function run() {
     });
 
     // selected Course
-
     app.post("/select", async (req, res) => {
       const select = req.body;
       const result = await SelectedCollection.insertOne(select);
