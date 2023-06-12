@@ -85,6 +85,11 @@ async function run() {
       const result = await classesCollection.insertOne(classes);
       res.send(result);
     });
+    app.get("/classes", async (req, res) => {
+      const cursor = classesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
