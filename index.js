@@ -52,7 +52,7 @@ async function run() {
     });
 
     //users Admin
-    //users instructor
+
     app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       console.log(req.params.id);
@@ -66,7 +66,7 @@ async function run() {
       res.send(result);
     });
     //users instructor
-    //users instructor
+
     app.patch("/users/instructor/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
