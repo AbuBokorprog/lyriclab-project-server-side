@@ -26,9 +26,7 @@ async function run() {
 
     const usersCollection = client.db("lyricLAB").collection("users");
     const classesCollection = client.db("lyricLAB").collection("classes");
-    const InstructorsCollection = client
-      .db("lyricLAB")
-      .collection("instructors");
+    const SelectedCollection = client.db("lyricLAB").collection("Selected");
 
     //users collection
     app.get("/users", async (req, res) => {
@@ -90,10 +88,17 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/classes/instructor/:email", async (req, res) => {
-      const { Instructor_Email } = req.params;
+    app.get("/classes:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const result = await classesCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/classes/status", async (req, res) => {
       const result = await classesCollection
-        .find({ instructor: Instructor_Email })
+        .find({ status: "Accepted" })
         .toArray();
       res.send(result);
     });
@@ -121,6 +126,14 @@ async function run() {
         },
       };
       const result = await classesCollection.updateOne(filter, updatedAccepted);
+      res.send(result);
+    });
+
+    // selected Course
+
+    app.post("/select", async (req, res) => {
+      const select = req.body;
+      const result = await SelectedCollection.insertOne(select);
       res.send(result);
     });
 
