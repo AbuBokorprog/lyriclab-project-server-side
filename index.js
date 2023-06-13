@@ -102,6 +102,7 @@ async function run() {
     });
 
     app.get("/classes/status", async (req, res) => {
+      //const { status } = req.params;
       const result = await classesCollection
         .find({ status: "Accepted" })
         .toArray();
@@ -138,6 +139,12 @@ async function run() {
     app.post("/select", async (req, res) => {
       const select = req.body;
       const result = await SelectedCollection.insertOne(select);
+      res.send(result);
+    });
+
+    app.get("/select", async (req, res) => {
+      const cursor = SelectedCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
