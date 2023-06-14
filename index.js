@@ -3,6 +3,7 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -76,6 +77,39 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/instructors/top", async (req, res) => {
+      const topInstructors = await usersCollection
+        .aggregate([
+          {
+            $match: {
+              role: "Instructor",
+            },
+          },
+          {
+            $lookup: {
+              from: "classes",
+              localField: "_id",
+              foreignField: "instructor",
+              as: "classes",
+            },
+          },
+          {
+            $addFields: {
+              totalEnrollments: { $sum: "$classes.enrolled" },
+            },
+          },
+          {
+            $sort: { totalEnrollments: -1 },
+          },
+          {
+            $limit: 6,
+          },
+        ])
+        .toArray();
+
+      res.send(topInstructors);
+    });
+
     app.get("/users/:email", async (req, res) => {
       const { email } = req.params;
       const result = await usersCollection.findOne({ email: email });
@@ -100,6 +134,15 @@ async function run() {
       const result = await classesCollection.find(query).toArray();
       res.send(result);
     });
+    //;
+    // app.get("/classes/sort", async (req, res) => {
+    //   //const { enrolled } = req.params;
+    //   const result = await classesCollection
+    //     .find()
+    //     .sort({ enrolled: -1 })
+    //     .toArray();
+    //   res.send(result);
+    // });
 
     app.get("/classes/status", async (req, res) => {
       //const { status } = req.params;
@@ -149,11 +192,12 @@ async function run() {
     });
 
     app.delete("/select/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await SelectedCollection.deleteOne(query);
+      const itemId = req.params.id;
+      const result = await SelectedCollection.deleteOne({ _id: itemId });
       res.send(result);
     });
+
+    //Payment
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
