@@ -36,6 +36,12 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/users/:id", async (req, res) => {
+      const Id = req.params.id;
+      const result = await usersCollection.deleteOne({ _id: Id });
+      res.send(result);
+    });
+
     //get instructor
     app.get("/users/instructor", async (req, res) => {
       const result = await usersCollection
@@ -134,15 +140,6 @@ async function run() {
       const result = await classesCollection.find(query).toArray();
       res.send(result);
     });
-    //;
-    // app.get("/classes/sort", async (req, res) => {
-    //   //const { enrolled } = req.params;
-    //   const result = await classesCollection
-    //     .find()
-    //     .sort({ enrolled: -1 })
-    //     .toArray();
-    //   res.send(result);
-    // });
 
     app.get("/classes/status", async (req, res) => {
       //const { status } = req.params;
@@ -197,7 +194,21 @@ async function run() {
       res.send(result);
     });
 
-    //Payment
+    //----------------------Payment--------------------------
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+
+      const amount = price * 100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
